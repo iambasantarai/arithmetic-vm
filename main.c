@@ -6,21 +6,13 @@ typedef enum {
     INST_PUSH,
     INST_ADD,
     INST_PRINT,
+    INST_END,
 } Inst_type;
 
 typedef struct {
     Inst_type type;
     int operand;
 } Inst;
-
-Inst program[] = {
-    {.type = INST_PUSH, .operand = 35},
-    {.type = INST_PUSH, .operand = 34},
-    {.type = INST_ADD},
-    {.type = INST_PRINT},
-};
-
-#define PROGRAM_SIZE (sizeof(program) / sizeof(program[0]))
 
 #define STACK_CAPACITY 1024
 int stack[STACK_CAPACITY];
@@ -36,24 +28,59 @@ int stack_pop(void){
     return stack[--stack_size];
 }
 
-int main(){
-    for(size_t ip = 0; ip < PROGRAM_SIZE; ++ip){
-        switch(program[ip].type){
-            case INST_PUSH:
-                stack_push(program[ip].operand);
-                break;
-            case INST_ADD: {
-                int a = stack_pop();
-                int b = stack_pop();
-                stack_push(a + b);
-                break;
-            }
-            case INST_PRINT:
-                printf("%d\n", stack_pop());
-                break;
-            default:
-                assert(0 && "Invalid instruction");
-        }
+void execute_instruction(Inst instruction) {
+    switch(instruction.type){
+        case INST_PUSH:
+            stack_push(instruction.operand);
+            break;
+        case INST_ADD: {
+            int a = stack_pop();
+            int b = stack_pop();
+            stack_push(a + b);
+        } break;
+        case INST_PRINT:
+            printf("%d\n", stack_pop());
+            break;
+        case INST_END:
+            exit(0);
+        default:
+            assert(0 && "Invalid instruction");
     }
+}
+
+int main(){
+    printf("=== [STACK BASED VIRTUAL MACHINE IN C] ===\n");
+
+    Inst instruction;
+    int choice;
+
+    do {
+        printf("+ Operations +\n");
+        printf("  [1]: Push \n");
+        printf("  [2]: Add \n");
+        printf("  [3]: Print \n");
+        printf("  [0]: End \n");
+
+        printf("Choose operation: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            instruction.type = INST_PUSH;
+            printf("Operand: ");
+            scanf("%d", &instruction.operand);
+        } else if (choice == 2) {
+            instruction.type = INST_ADD;
+        } else if (choice == 3) {
+            instruction.type = INST_PRINT;
+        } else if (choice == 0) {
+            instruction.type = INST_END;
+        } else {
+            printf("Invalid operation. Please choose a valid operation.\n");
+            continue;
+        }
+
+        execute_instruction(instruction);
+    } while (1);
+
     return 0;
 }
