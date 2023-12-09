@@ -4,6 +4,7 @@
 
 typedef enum {
     INST_PUSH,
+    INST_ADD,
     INST_PRINT,
 } Inst_type;
 
@@ -13,7 +14,9 @@ typedef struct {
 } Inst;
 
 Inst program[] = {
-    {.type = INST_PUSH, .operand = 69},
+    {.type = INST_PUSH, .operand = 35},
+    {.type = INST_PUSH, .operand = 34},
+    {.type = INST_ADD},
     {.type = INST_PRINT},
 };
 
@@ -39,6 +42,12 @@ int main(){
             case INST_PUSH:
                 stack_push(program[ip].operand);
                 break;
+            case INST_ADD: {
+                int a = stack_pop();
+                int b = stack_pop();
+                stack_push(a + b);
+                break;
+            }
             case INST_PRINT:
                 printf("%d\n", stack_pop());
                 break;
