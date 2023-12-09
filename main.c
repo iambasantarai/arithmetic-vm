@@ -5,6 +5,10 @@
 typedef enum {
     INST_PUSH,
     INST_ADD,
+    INST_SUB,
+    INST_MUL,
+    INST_DIV,
+    INST_MOD,
     INST_PRINT,
     INST_END,
 } Inst_type;
@@ -38,6 +42,28 @@ void execute_instruction(Inst instruction) {
             int b = stack_pop();
             stack_push(a + b);
         } break;
+        case INST_SUB: {
+            int a = stack_pop();
+            int b = stack_pop();
+            stack_push(a - b);
+        } break;
+        case INST_MUL: {
+            int a = stack_pop();
+            int b = stack_pop();
+            stack_push(a * b);
+        } break;
+        case INST_DIV: {
+            int a = stack_pop();
+            int b = stack_pop();
+            assert(b != 0);
+            stack_push(a / b);
+        } break;
+        case INST_MOD: {
+            int a = stack_pop();
+            int b = stack_pop();
+            assert(b != 0);
+            stack_push(a % b);
+        } break;
         case INST_PRINT:
             printf("%d\n", stack_pop());
             break;
@@ -56,10 +82,14 @@ int main(){
 
     do {
         printf("+ Operations +\n");
-        printf("  [1]: Push \n");
-        printf("  [2]: Add \n");
-        printf("  [3]: Print \n");
         printf("  [0]: End \n");
+        printf("  [1]: Push \n");
+        printf("  [2]: Addtion \n");
+        printf("  [3]: Subtraction \n");
+        printf("  [4]: Multiplication \n");
+        printf("  [5]: Division \n");
+        printf("  [6]: Modulo \n");
+        printf("  [7]: Print \n");
 
         printf("Choose operation: ");
         scanf("%d", &choice);
@@ -71,6 +101,14 @@ int main(){
         } else if (choice == 2) {
             instruction.type = INST_ADD;
         } else if (choice == 3) {
+            instruction.type = INST_SUB;
+        } else if (choice == 4) {
+            instruction.type = INST_MUL;
+        } else if (choice == 5) {
+            instruction.type = INST_DIV;
+        } else if (choice == 6) {
+            instruction.type = INST_MOD;
+        } else if (choice == 7) {
             instruction.type = INST_PRINT;
         } else if (choice == 0) {
             instruction.type = INST_END;
