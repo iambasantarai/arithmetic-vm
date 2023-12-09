@@ -10,6 +10,7 @@ typedef enum {
     INST_DIV,
     INST_MOD,
     INST_PRINT,
+    INST_TRAVERSE,
     INST_END,
 } Inst_type;
 
@@ -30,6 +31,15 @@ void stack_push(int value){
 int stack_pop(void){
     assert(stack_size > 0);
     return stack[--stack_size];
+}
+
+void stack_traverse(){
+    assert(stack_size > 0);
+
+    printf("TRAVERSING STACK\n");
+    for(size_t sp = 0; sp<stack_size; ++sp){
+        printf("%d\n",stack[sp]);
+    }
 }
 
 void execute_instruction(Inst instruction) {
@@ -67,6 +77,9 @@ void execute_instruction(Inst instruction) {
         case INST_PRINT:
             printf("%d\n", stack_pop());
             break;
+        case INST_TRAVERSE:
+            stack_traverse();
+            break;
         case INST_END:
             exit(0);
         default:
@@ -90,6 +103,7 @@ int main(){
         printf("  [5]: Division \n");
         printf("  [6]: Modulo \n");
         printf("  [7]: Print \n");
+        printf("  [8]: Traverse \n");
 
         printf("Choose operation: ");
         scanf("%d", &choice);
@@ -110,6 +124,8 @@ int main(){
             instruction.type = INST_MOD;
         } else if (choice == 7) {
             instruction.type = INST_PRINT;
+        } else if (choice == 8) {
+            instruction.type = INST_TRAVERSE;
         } else if (choice == 0) {
             instruction.type = INST_END;
         } else {
